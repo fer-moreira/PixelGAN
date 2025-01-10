@@ -4,23 +4,26 @@ class PixelArtDiscriminator(nn.Module):
     def __init__(self, image_size=32):
         super().__init__()
         
-        def discriminator_block(in_channels, out_channels):
+        def discriminator_block(in_channels, out_channels, size):
             return nn.Sequential(
                 nn.Conv2d(in_channels, out_channels, 3, stride=1, padding=1),
-                nn.LayerNorm([out_channels, image_size, image_size]),
+                nn.LayerNorm([out_channels, size, size]),
                 nn.LeakyReLU(0.2),
                 nn.Conv2d(out_channels, out_channels, 3, stride=2, padding=1),
-                nn.LayerNorm([out_channels, image_size//2, image_size//2]),
+                nn.LayerNorm([out_channels, size//2, size//2]),
                 nn.LeakyReLU(0.2)
             )
         
+        # Track image size as it gets downsampled
+        current_size = image_size
+        
         self.main = nn.Sequential(
             # Input layer
-            discriminator_block(3, 64),
-            # Feature extraction
-            discriminator_block(64, 128),
-            discriminator_block(128, 256),
-            discriminator_block(256, 512),
+            discriminator_block(3, 64, current_size),
+            # Feature extraction layers
+            discriminator_block(64, 128, current_size//2),
+            discriminator_block(128, 256, current_size//4),
+            discriminator_block(256, 512, current_size//8),
         )
         
         # Calculate final feature map size

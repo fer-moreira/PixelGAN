@@ -1,13 +1,9 @@
 import torch
 from pathlib import Path
 from torchvision.utils import save_image
-from PIL import Image
-import numpy as np
 import time
 
-# Import the Generator architecture from the training script
-# Assuming it's saved in a file called 'model.py'
-from train import PixelArtGenerator
+from modules.generator import PixelArtGenerator
 
 def generate_pixel_art(
     model_path,
@@ -48,7 +44,7 @@ def generate_pixel_art(
             # Save the image
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             save_image(fake_image.data, 
-                      output_dir / f"pixel_art_{timestamp}_{i+1}.png", 
+                      output_dir / f"generated_{timestamp}_{i+1}.png", 
                       normalize=True)
             
             print(f"Generated image {i+1}/{num_images}")
