@@ -169,3 +169,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+/training/models/*
+/training/generated/*
+/training/exported/*
+/training/subject.png
